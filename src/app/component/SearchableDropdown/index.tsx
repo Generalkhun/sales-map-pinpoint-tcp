@@ -13,10 +13,11 @@ const options = MockupLocation.map((store) => ({
 
 export default function SearchableDropdown() {
   const handleChange = (selectedOption: unknown) => {
-    console.log((selectedOption as {
+    const selectedStore = MockupLocation.find(location => location.id.toString() === (selectedOption as {
   value: string,
   label: string,
-})?.value);
+})?.value.toString())
+    console.log(selectedStore);
   };
 
   return (
