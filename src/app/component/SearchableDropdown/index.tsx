@@ -12,8 +12,11 @@ const options = MockupLocation.map((store) => ({
 }));
 
 export default function SearchableDropdown() {
-  const handleChange = (selectedOption: any) => {
-    console.log(selectedOption?.value);
+  const handleChange = (selectedOption: unknown) => {
+    console.log((selectedOption as {
+  value: string,
+  label: string,
+})?.value);
   };
 
   return (
