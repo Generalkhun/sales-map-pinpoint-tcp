@@ -12,8 +12,6 @@ export default function MapboxMap() {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [marker, setMarker] = useState<mapboxgl.Marker | null>(null);
 
-
-
   const handleAddCurrentLocation = useCallback(() => {
     if (!navigator.geolocation) {
       alert('Geolocation not supported');
@@ -30,8 +28,10 @@ export default function MapboxMap() {
 
         // Add or update marker
         if (marker) {
+          // Reposition existing marker
           marker.setLngLat([lng, lat]);
         } else {
+          // Create new marker and update state
           const newMarker = new mapboxgl.Marker({ color: 'red' })
             .setLngLat([lng, lat])
             .addTo(mapRef.current!);
@@ -42,7 +42,8 @@ export default function MapboxMap() {
         alert('Error getting location: ' + error.message);
       }
     );
-  },[]);
+  }, [marker]); // Add marker as dependency
+
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
@@ -54,34 +55,35 @@ export default function MapboxMap() {
     });
 
     mapRef.current = map;
-    handleAddCurrentLocation()
-    return () => map.remove();
-  }, [handleAddCurrentLocation]);
+    
+    // Wait for map to load before requesting location
+    map.on('load', () => {
+      handleAddCurrentLocation();
+    });
+
+    return () => {
+      // Clean up marker when component unmounts
+      if (marker) {
+        marker.remove();
+      }
+      map.remove();
+    };
+  }, []);
+
   return (
     <div className="relative w-full h-screen">
       <div ref={mapContainerRef} className="w-full h-full" />
 
-    <div className="absolute top-4 left-4 flex gap-2 items-center">
-    {/* Dropdown for selecting a location */}
-<button
-  onClick={handleAddCurrentLocation}
-  className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded shadow-md"
->
-  <ArrowPathIcon className="w-5 h-5" />
-  Refresh Current Location
-</button>
-        {/* <select className="border px-3 py-2 rounded w-[400px] bg-white" onChange={(e) => console.log(e.target.value)}>
-            <option value="">Select a location</option>
-            {MockupLocation.map((store) => {
-                return (
-                    <option key={store.id} value={store.id}>
-                        {store.name}
-                    </option>
-                )
-            })}
-        </select> */}
+      <div className="absolute top-4 left-4 flex gap-2 items-center">
+        <button
+          onClick={handleAddCurrentLocation}
+          className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md"
+        >
+          <ArrowPathIcon className="w-5 h-5" />
+          Refresh Current Location
+        </button>
         <SearchableDropdown/>
-    </div>
+      </div>
     </div>
   );
 }
