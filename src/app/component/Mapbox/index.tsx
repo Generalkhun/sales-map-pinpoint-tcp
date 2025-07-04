@@ -1,7 +1,7 @@
 'use client';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import SearchableDropdown from '../SearchableDropdown';
 import { ArrowPathIcon } from '@heroicons/react/20/solid';
 
@@ -14,7 +14,7 @@ export default function MapboxMap() {
 
 
 
-  const handleAddCurrentLocation = () => {
+  const handleAddCurrentLocation = useCallback(() => {
     if (!navigator.geolocation) {
       alert('Geolocation not supported');
       return;
@@ -42,7 +42,7 @@ export default function MapboxMap() {
         alert('Error getting location: ' + error.message);
       }
     );
-  };
+  },[]);
   useEffect(() => {
     if (!mapContainerRef.current) return;
 
