@@ -41,6 +41,20 @@ export default function MapboxMap() {
     Record<string, { lat: string; long: string }>
   >({});
 
+  // Fix for iOS Safari 100vh issue
+  useEffect(() => {
+    const setVh = () => {
+      document.documentElement.style.setProperty(
+        "--vh",
+        `${window.innerHeight * 0.01}px`
+      );
+    };
+    setVh();
+    window.addEventListener("resize", setVh);
+    return () => window.removeEventListener("resize", setVh);
+  }, []);
+
+
   // Calculate distance between two coordinates in meters
   const calculateDistance = (
     lat1: number,
@@ -435,7 +449,10 @@ export default function MapboxMap() {
   };
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <div
+      className="relative w-full overflow-hidden"
+      style={{ height: "calc(var(--vh, 1vh) * 100)" }}
+    >
       <div ref={mapContainerRef} className="w-full h-full" />
 
       {/* Top Controls - Always at top */}
