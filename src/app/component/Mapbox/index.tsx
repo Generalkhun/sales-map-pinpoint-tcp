@@ -12,20 +12,7 @@ export default function MapboxMap() {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [marker, setMarker] = useState<mapboxgl.Marker | null>(null);
 
-  useEffect(() => {
-    if (!mapContainerRef.current) return;
 
-    const map = new mapboxgl.Map({
-      container: mapContainerRef.current,
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [100.523186, 13.736717], // Bangkok, Thailand
-      zoom: 10,
-    });
-
-    mapRef.current = map;
-    handleAddCurrentLocation()
-    return () => map.remove();
-  }, []);
 
   const handleAddCurrentLocation = () => {
     if (!navigator.geolocation) {
@@ -56,7 +43,20 @@ export default function MapboxMap() {
       }
     );
   };
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
 
+    const map = new mapboxgl.Map({
+      container: mapContainerRef.current,
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [100.523186, 13.736717], // Bangkok, Thailand
+      zoom: 10,
+    });
+
+    mapRef.current = map;
+    handleAddCurrentLocation()
+    return () => map.remove();
+  }, [handleAddCurrentLocation]);
   return (
     <div className="relative w-full h-screen">
       <div ref={mapContainerRef} className="w-full h-full" />
