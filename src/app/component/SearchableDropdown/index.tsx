@@ -1,17 +1,17 @@
-'use client';
-import { MockupLocation } from '@/app/constants';
-import dynamic from 'next/dynamic';
+"use client";
+import { MockupLocation } from "@/app/constants";
+import dynamic from "next/dynamic";
 
-const DynamicSelect = dynamic(() => import('react-select'), { ssr: false });
+const DynamicSelect = dynamic(() => import("react-select"), { ssr: false });
 
 interface StoreObj {
-  id: string,
-  lat?: string,
-  long?: string,
-  name: string,
-  note: string,
-  address?: string,
-  phone?: string,
+  id: string;
+  lat?: string;
+  long?: string;
+  name: string;
+  note: string;
+  address?: string;
+  phone?: string;
 }
 
 interface SearchableDropdownProps {
@@ -24,7 +24,10 @@ const options = MockupLocation.map((store) => ({
   label: store.name,
 }));
 
-export default function SearchableDropdown({ onBusinessSelect, onRefocusCurrentLocation }: SearchableDropdownProps) {
+export default function SearchableDropdown({
+  onBusinessSelect,
+  onRefocusCurrentLocation,
+}: SearchableDropdownProps) {
   const handleChange = (selectedOption: unknown) => {
     if (!selectedOption) {
       // When cleared, refocus on current location
@@ -33,38 +36,40 @@ export default function SearchableDropdown({ onBusinessSelect, onRefocusCurrentL
       return;
     }
 
-    const selectedStore = MockupLocation.find(location => 
-      location.id.toString() === (selectedOption as { value: string, label: string })?.value.toString()
+    const selectedStore = MockupLocation.find(
+      (location) =>
+        location.id.toString() ===
+        (selectedOption as { value: string; label: string })?.value.toString()
     );
-    
+
     console.log(selectedStore);
     onBusinessSelect(selectedStore || null);
   };
 
   return (
-    <div className="w-full max-w-xs sm:max-w-sm md:max-w-md md:min-w-sm">
+    <div className="w-full sm:max-w-sm sm:min-w-xs md:max-w-md md:min-w-sm">
       <DynamicSelect
         options={options}
         onChange={handleChange}
         placeholder="ค้นหาสถานที่..."
-        className='text-black text-sm sm:text-base'
+        className="text-black text-sm sm:text-base"
         isClearable
         styles={{
           control: (base) => ({
             ...base,
-            minHeight: '40px',
-            fontSize: '14px',
-            '@media (min-width: 640px)': {
-              fontSize: '16px',
-            }
+            minHeight: "40px",
+            fontSize: "14px",
+            "@media (min-width: 640px)": {
+              fontSize: "16px",
+            },
           }),
           placeholder: (base) => ({
             ...base,
-            fontSize: '14px',
-            '@media (min-width: 640px)': {
-              fontSize: '16px',
-            }
-          })
+            fontSize: "14px",
+            "@media (min-width: 640px)": {
+              fontSize: "16px",
+            },
+          }),
         }}
       />
     </div>

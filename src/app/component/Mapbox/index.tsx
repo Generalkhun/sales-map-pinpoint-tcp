@@ -76,13 +76,13 @@ export default function MapboxMap() {
     // Different padding for mobile vs desktop
     const isMobile = window.innerWidth < 640;
     const padding = isMobile
-      ? { top: 80, bottom: 200, left: 20, right: 20 } // Bottom padding for mobile panel
-      : { top: 200, bottom: 100, left: 100, right: 100 }; // Top padding for desktop panel stack
+      ? { top: 80, bottom: 220, left: 20, right: 20 } // Bottom padding for mobile panel
+      : { top: 200, bottom: 100, left: 100, right: 100 }; // Top padding for desktop panel
 
     // Fit the map to show both markers with appropriate padding
     mapRef.current.fitBounds(bounds, {
       padding,
-      maxZoom: 15, // Prevent zooming in too much
+      maxZoom: 15, // Prevent zooming in too much, but allow zooming out
     });
   }, [currentLocationMarker, businessMarker]);
 
@@ -201,24 +201,20 @@ export default function MapboxMap() {
               setCurrentLocationMarker(newCurrentLocationMarker);
             }
 
-            // Fit both markers in view with updated current location
-            const currentLngLat = { lng: currentLng, lat: currentLat };
-            const businessLngLat = currentBusinessMarker!.getLngLat();
-
-            const bounds = new mapboxgl.LngLatBounds()
-              .extend([currentLngLat.lng, currentLngLat.lat])
-              .extend(businessLngLat);
-
             setTimeout(() => {
-              // Different padding for mobile vs desktop
+              // Use consistent bounds fitting for both mobile and desktop
+              const bounds = new mapboxgl.LngLatBounds()
+                .extend([currentLng, currentLat])
+                .extend([lng, lat]);
+
               const isMobile = window.innerWidth < 640;
               const padding = isMobile
-                ? { top: 80, bottom: 200, left: 20, right: 20 }
+                ? { top: 80, bottom: 220, left: 20, right: 20 }
                 : { top: 200, bottom: 100, left: 100, right: 100 };
 
               mapRef.current?.fitBounds(bounds, {
                 padding,
-                maxZoom: 15,
+                maxZoom: 15, // Allow zooming out to show both markers
               });
             }, 100);
           },
@@ -230,20 +226,20 @@ export default function MapboxMap() {
               const currentLngLat = currentLocationMarker.getLngLat();
               const businessLngLat = currentBusinessMarker.getLngLat();
 
-              const bounds = new mapboxgl.LngLatBounds()
-                .extend(currentLngLat)
-                .extend(businessLngLat);
-
               setTimeout(() => {
-                // Different padding for mobile vs desktop
+                // Use consistent bounds fitting for both mobile and desktop
+                const bounds = new mapboxgl.LngLatBounds()
+                  .extend(currentLngLat)
+                  .extend(businessLngLat);
+
                 const isMobile = window.innerWidth < 640;
                 const padding = isMobile
-                  ? { top: 80, bottom: 200, left: 20, right: 20 }
+                  ? { top: 80, bottom: 220, left: 20, right: 20 }
                   : { top: 200, bottom: 100, left: 100, right: 100 };
 
                 mapRef.current?.fitBounds(bounds, {
                   padding,
-                  maxZoom: 15,
+                  maxZoom: 15, // Allow zooming out to show both markers
                 });
               }, 100);
             } else {
@@ -439,34 +435,36 @@ export default function MapboxMap() {
   };
 
   return (
-    <div className="relative w-full h-screen">
+    <div className="relative w-full h-screen overflow-hidden">
       <div ref={mapContainerRef} className="w-full h-full" />
 
       {/* Top Controls - Always at top */}
-      <div className="absolute top-4 left-4 z-10 space-y-4">
+      <div className="absolute top-4 left-4 right-4 sm:right-auto z-10 space-y-4">
         <div className="flex gap-2 items-center">
           <button
             onClick={handleAddCurrentLocation}
-            className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-3 sm:px-4 py-2 rounded shadow-md text-sm sm:text-base"
+            className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-3 sm:px-4 py-2 rounded shadow-md text-sm sm:text-base flex-shrink-0"
             aria-label="Refresh current location"
           >
             <ArrowPathIcon className="w-4 h-4 sm:w-5 sm:h-5" />
             <span className="hidden sm:inline">รีเฟรช</span>
           </button>
-          <SearchableDropdown
-            onBusinessSelect={handleBusinessSelect}
-            onRefocusCurrentLocation={() => {
-              if (currentLocationMarker) {
-                const currentLngLat = currentLocationMarker.getLngLat();
-                mapRef.current?.flyTo({
-                  center: [currentLngLat.lng, currentLngLat.lat],
-                  zoom: 14,
-                });
-              } else {
-                handleAddCurrentLocation();
-              }
-            }}
-          />
+          <div className="flex-1 min-w-0">
+            <SearchableDropdown
+              onBusinessSelect={handleBusinessSelect}
+              onRefocusCurrentLocation={() => {
+                if (currentLocationMarker) {
+                  const currentLngLat = currentLocationMarker.getLngLat();
+                  mapRef.current?.flyTo({
+                    center: [currentLngLat.lng, currentLngLat.lat],
+                    zoom: 14,
+                  });
+                } else {
+                  handleAddCurrentLocation();
+                }
+              }}
+            />
+          </div>
         </div>
 
         {/* Business Detail Panel - Desktop only */}
