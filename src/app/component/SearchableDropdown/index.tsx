@@ -1,32 +1,71 @@
 'use client';
 import { MockupLocation } from '@/app/constants';
-// import Select from 'react-select';
-    import dynamic from 'next/dynamic';
+import dynamic from 'next/dynamic';
 
-    const DynamicSelect = dynamic(() => import('react-select'), { ssr: false });
+const DynamicSelect = dynamic(() => import('react-select'), { ssr: false });
 
+interface StoreObj {
+  id: string,
+  lat?: string,
+  long?: string,
+  name: string,
+  note: string,
+  address?: string,
+  phone?: string,
+}
+
+interface SearchableDropdownProps {
+  onBusinessSelect: (business: StoreObj | null) => void;
+  onRefocusCurrentLocation: () => void;
+}
 
 const options = MockupLocation.map((store) => ({
   value: store.id,
   label: store.name,
 }));
 
-export default function SearchableDropdown() {
+export default function SearchableDropdown({ onBusinessSelect, onRefocusCurrentLocation }: SearchableDropdownProps) {
   const handleChange = (selectedOption: unknown) => {
-    const selectedStore = MockupLocation.find(location => location.id.toString() === (selectedOption as {
-  value: string,
-  label: string,
-})?.value.toString())
+    if (!selectedOption) {
+      // When cleared, refocus on current location
+      onBusinessSelect(null);
+      onRefocusCurrentLocation();
+      return;
+    }
+
+    const selectedStore = MockupLocation.find(location => 
+      location.id.toString() === (selectedOption as { value: string, label: string })?.value.toString()
+    );
+    
     console.log(selectedStore);
+    onBusinessSelect(selectedStore || null);
   };
 
   return (
-    <div className="w-[400px]">
+    <div className="w-full max-w-xs sm:max-w-sm md:max-w-md md:min-w-sm">
       <DynamicSelect
         options={options}
         onChange={handleChange}
-        placeholder="Select a location"
-        className='text-black'
+        placeholder="ค้นหาสถานที่..."
+        className='text-black text-sm sm:text-base'
+        isClearable
+        styles={{
+          control: (base) => ({
+            ...base,
+            minHeight: '40px',
+            fontSize: '14px',
+            '@media (min-width: 640px)': {
+              fontSize: '16px',
+            }
+          }),
+          placeholder: (base) => ({
+            ...base,
+            fontSize: '14px',
+            '@media (min-width: 640px)': {
+              fontSize: '16px',
+            }
+          })
+        }}
       />
     </div>
   );
