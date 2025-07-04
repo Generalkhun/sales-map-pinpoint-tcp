@@ -58,14 +58,14 @@ export default function SearchableDropdown({
           control: (base) => ({
             ...base,
             minHeight: "40px",
-            fontSize: "14px",
+            fontSize: "16px", // Set minimum 16px to prevent iOS zoom
             "@media (min-width: 640px)": {
               fontSize: "16px",
             },
           }),
           placeholder: (base) => ({
             ...base,
-            fontSize: "14px",
+            fontSize: "16px", // Set minimum 16px to prevent iOS zoom
             "@media (min-width: 640px)": {
               fontSize: "16px",
             },
