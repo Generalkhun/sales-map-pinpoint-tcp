@@ -1,8 +1,9 @@
 'use client';
-
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useEffect, useRef, useState } from 'react';
+import SearchableDropdown from '../SearchableDropdown';
+import { ArrowPathIcon } from '@heroicons/react/20/solid';
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiZ2VuZXJhbGtodW4iLCJhIjoiY2t0bGl5NXduMXdmaTJ2bXA3NXgyMXR4aiJ9.dBaNof7U4QoJImXeDk1QXg';
 
@@ -22,7 +23,7 @@ export default function MapboxMap() {
     });
 
     mapRef.current = map;
-
+    handleAddCurrentLocation()
     return () => map.remove();
   }, []);
 
@@ -60,12 +61,27 @@ export default function MapboxMap() {
     <div className="relative w-full h-screen">
       <div ref={mapContainerRef} className="w-full h-full" />
 
-      <button
-        onClick={handleAddCurrentLocation}
-        className="absolute top-4 left-4 bg-blue-500 text-white px-4 py-2 rounded shadow-md"
-      >
-        Add Current Location
-      </button>
+    <div className="absolute top-4 left-4 flex gap-2 items-center">
+    {/* Dropdown for selecting a location */}
+<button
+  onClick={handleAddCurrentLocation}
+  className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded shadow-md"
+>
+  <ArrowPathIcon className="w-5 h-5" />
+  Refresh Current Location
+</button>
+        {/* <select className="border px-3 py-2 rounded w-[400px] bg-white" onChange={(e) => console.log(e.target.value)}>
+            <option value="">Select a location</option>
+            {MockupLocation.map((store) => {
+                return (
+                    <option key={store.id} value={store.id}>
+                        {store.name}
+                    </option>
+                )
+            })}
+        </select> */}
+        <SearchableDropdown/>
+    </div>
     </div>
   );
 }
