@@ -100,7 +100,7 @@ export default function MapboxMap() {
     });
   }, [currentLocationMarker, businessMarker]);
 
-  const handleAddNewLocation = () => {
+const handleAddNewLocation = () => {
     if (!selectedBusiness || !currentUserLocation) return;
 
     // Store the update in session state
@@ -130,9 +130,21 @@ export default function MapboxMap() {
         currentUserLocation.lat,
       ]);
     } else {
+      // Create popup for business marker
+      const popup = new mapboxgl.Popup({ 
+        offset: 40,
+        closeButton: false,
+        closeOnClick: false 
+      })
+        .setHTML('<div style="font-size: 12px; font-weight: 500; color: #374151;">ตำแหน่งร้านที่เลือก</div>');
+
       const newBusinessMarker = new mapboxgl.Marker({ color: "blue" })
         .setLngLat([currentUserLocation.lng, currentUserLocation.lat])
+        .setPopup(popup)
         .addTo(mapRef.current!);
+      
+      // Show popup immediately
+      newBusinessMarker.togglePopup();
       setBusinessMarker(newBusinessMarker);
     }
 
@@ -188,9 +200,21 @@ export default function MapboxMap() {
       if (businessMarker) {
         businessMarker.setLngLat([lng, lat]);
       } else {
+        // Create popup for business marker
+        const popup = new mapboxgl.Popup({ 
+          offset: 40,
+          closeButton: false,
+          closeOnClick: false 
+        })
+          .setHTML('<div style="font-size: 12px; font-weight: 500; color: #374151;">ตำแหน่งร้านที่เลือก</div>');
+
         const newBusinessMarker = new mapboxgl.Marker({ color: "blue" })
           .setLngLat([lng, lat])
+          .setPopup(popup)
           .addTo(mapRef.current!);
+        
+        // Show popup immediately
+        newBusinessMarker.togglePopup();
         setBusinessMarker(newBusinessMarker);
         currentBusinessMarker = newBusinessMarker;
       }
@@ -207,11 +231,23 @@ export default function MapboxMap() {
             if (currentLocationMarker) {
               currentLocationMarker.setLngLat([currentLng, currentLat]);
             } else {
+              // Create popup for current location marker
+              const popup = new mapboxgl.Popup({ 
+                offset: 40,
+                closeButton: false,
+                closeOnClick: false 
+              })
+                .setHTML('<div style="font-size: 12px; font-weight: 500; color: #374151;">ตำแหน่งของคุณ</div>');
+
               const newCurrentLocationMarker = new mapboxgl.Marker({
                 color: "red",
               })
                 .setLngLat([currentLng, currentLat])
+                .setPopup(popup)
                 .addTo(mapRef.current!);
+              
+              // Show popup immediately
+              newCurrentLocationMarker.togglePopup();
               setCurrentLocationMarker(newCurrentLocationMarker);
             }
 
@@ -334,10 +370,21 @@ export default function MapboxMap() {
           // Reposition existing marker
           currentLocationMarker.setLngLat([lng, lat]);
         } else {
-          // Create new marker and update state
+          // Create new marker with popup label
+          const popup = new mapboxgl.Popup({ 
+            offset: 40,
+            closeButton: false,
+            closeOnClick: false 
+          })
+            .setHTML('<div style="font-size: 12px; font-weight: 500; color: #374151;">ตำแหน่งของคุณ</div>');
+
           const newCurrentLocationMarker = new mapboxgl.Marker({ color: "red" })
             .setLngLat([lng, lat])
+            .setPopup(popup)
             .addTo(mapRef.current!);
+          
+          // Show popup immediately
+          newCurrentLocationMarker.togglePopup();
           setCurrentLocationMarker(newCurrentLocationMarker);
         }
 
