@@ -18,7 +18,7 @@ interface StoreObj {
 }
 
 export default function MapboxMap() {
-  mapboxgl.accessToken = process.env.GGMAP_KEY;
+  mapboxgl.accessToken = process.env.NEXT_PUBLIC_GGMAP_KEY;
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [currentLocationMarker, setCurrentLocationMarker] =
