@@ -5,9 +5,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import SearchableDropdown from "../SearchableDropdown";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoiZ2VuZXJhbGtodW4iLCJhIjoiY2t0bGl5NXduMXdmaTJ2bXA3NXgyMXR4aiJ9.dBaNof7U4QoJImXeDk1QXg";
-
 interface StoreObj {
   id: string;
   lat?: string;
@@ -17,6 +14,7 @@ interface StoreObj {
   address?: string;
   phone?: string;
 }
+mapboxgl.accessToken = process.env.ggmap_key;
 
 export default function MapboxMap() {
   const mapContainerRef = useRef<HTMLDivElement>(null);
