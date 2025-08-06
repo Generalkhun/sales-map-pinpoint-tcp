@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import SearchableDropdown from "../SearchableDropdown";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 
-mapboxgl.accessToken = process.env.GGMAP_KEY;
+
 
 interface StoreObj {
   id: string;
@@ -18,6 +18,7 @@ interface StoreObj {
 }
 
 export default function MapboxMap() {
+  mapboxgl.accessToken = process.env.GGMAP_KEY;
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [currentLocationMarker, setCurrentLocationMarker] =
