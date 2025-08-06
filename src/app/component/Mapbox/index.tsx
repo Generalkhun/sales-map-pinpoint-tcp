@@ -5,8 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import SearchableDropdown from "../SearchableDropdown";
 import { ArrowPathIcon } from "@heroicons/react/20/solid";
 
-mapboxgl.accessToken =
-  "pk.eyJ1IjoiZ2VuZXJhbGtodW4iLCJhIjoiY2t0bGl5NXduMXdmaTJ2bXA3NXgyMXR4aiJ9.dBaNof7U4QoJImXeDk1QXg";
+mapboxgl.accessToken = process.env.GGMAP_KEY;
 
 interface StoreObj {
   id: string;
